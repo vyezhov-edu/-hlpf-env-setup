@@ -12,6 +12,13 @@ import { RolesGuard }
 import { Roles }
     from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
+import {
+    ApiTags, ApiOperation, ApiResponse,
+    ApiBearerAuth,
+} from '@nestjs/swagger';
+
+
+@ApiTags('Categories')
 
 @Controller('api/categories')
 export class CategoriesController {
@@ -30,6 +37,7 @@ export class CategoriesController {
     }
 
     @Post()
+    @ApiBearerAuth()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.ADMIN)
     create(@Body() dto: CreateCategoryDto) {
@@ -37,6 +45,7 @@ export class CategoriesController {
     }
 
     @Patch(':id')
+    @ApiBearerAuth()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.ADMIN)
     update(
@@ -47,6 +56,7 @@ export class CategoriesController {
     }
 
     @Delete(':id')
+    @ApiBearerAuth()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.ADMIN)
     remove(@Param('id', ParseIntPipe) id: number) {
