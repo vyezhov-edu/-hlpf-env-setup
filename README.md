@@ -2,89 +2,136 @@
 - Name: Єжов Вадим Олександрович
 - Group: 232.1
 
-## Практичне заняття №2 — NestJS + PostgreSQL + Redis
+## Практичне заняття №3 — CRUD REST API для MiniShop
 
-## Структура репозиторію
+### Структура репозиторію
 ```
 .
-├── src/              	# NestJS source code
+├── src/
+│   ├── categories/
+│   │   ├── category.entity.ts
+│   │   ├── categories.module.ts
+│   │   ├── categories.service.ts
+│   │   └── categories.controller.ts
+│   ├── products/
+│   │   ├── product.entity.ts
+│   │   ├── products.module.ts
+│   │   ├── products.service.ts
+│   │   └── products.controller.ts
+│   ├── migrations/
+│   │   ├── 1700000001-CreateTables.ts
+│   │   └── <timestamp>-AddIsActiveToProducts.ts
+│   ├── data-source.ts
+│   └── app.module.ts
 ├── Dockerfile
 ├── docker-compose.yml
-├── .env.example      	# шаблон змінних оточення
 └── README.md
 ```
 
-## Запуск проекту
+### Запуск проекту
 ```bash
-cp .env.example .env   # налаштувати значення
-docker compose up --build
+ [2:54:48 PM] Found 0 errors. Watching for file changes.
 ```
 
-## Перевірка сервісів
+### API Endpoints
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [NestFactory] Starting Nest application...
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +69ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] AppModule dependencies initialized +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] CacheModule dependencies initialized +14ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +44ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] CategoriesModule dependencies initialized +2ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [InstanceLoader] ProductsModule dependencies initialized +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RoutesResolver] AppController {/}: +4ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/, GET} route +2ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RoutesResolver] CategoriesController {/api/categories}: +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/categories, GET} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/categories/:id, GET} route +3ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/categories, POST} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/categories/:id, PATCH} route +2ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/categories/:id, DELETE} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RoutesResolver] ProductsController {/api/products}: +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/products, GET} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/products/:id, GET} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/products, POST} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/products/:id, PATCH} route +0ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [RouterExplorer] Mapped {/api/products/:id, DELETE} route +1ms
+app-1  | [Nest] 34  - 05/10/2026, 2:54:50 PM     LOG [NestApplication] Nest application successfully started +2ms
+
+
+### Перевірка міграцій
 ```text
-NAME                        IMAGE                COMMAND                  SERVICE    CREATED         STATUS                   PORTS
-hlpf-env-setup-app-1        hlpf-env-setup-app   "docker-entrypoint.s…"   app        2 minutes ago   Up 2 minutes             0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
-hlpf-env-setup-postgres-1   postgres:16-alpine   "docker-entrypoint.s…"   postgres   7 minutes ago   Up 2 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
-hlpf-env-setup-redis-1      redis:7-alpine       "docker-entrypoint.s…"   redis      7 minutes ago   Up 2 minutes (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
-```
-
-## Перевірка PostgreSQL
-```text
-                                                      List of databases
-   Name    |  Owner   | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules |   Access privileges   
------------+----------+----------+-----------------+------------+------------+------------+-----------+-----------------------
- nestdb    | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | 
- postgres  | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | 
- template0 | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/nestuser          +
-           |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
- template1 | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/nestuser          +
-           |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
-(4 rows)
-```
-
-## Перевірка Redis
-```text
-PONG
-```
-
-## Перевірка застосунку
-```text
-StatusCode        : 200
-StatusDescription : OK
-Content           : Hello World!
-RawContent        : HTTP/1.1 200 OK
-                    Connection: keep-alive
-                    Keep-Alive: timeout=5
-                    Content-Length: 12
-                    Content-Type: text/html; charset=utf-8
-                    Date: Thu, 07 May 2026 09:56:27 GMT
-                    ETag: W/"c-Lve95gjOVATpfV8EL5X4nxwjKHE"...
-Forms             : {}
-Headers           : {[Connection, keep-alive], [Keep-Alive, timeout=5], [Content-Length, 12], [Content-Type, text/html; charset=utf-8]...}
-Images            : {}
-InputFields       : {}
-Links             : {}
-ParsedHtml        : System.__ComObject
-RawContentLength  : 12
-
-
+           List of relations
+ Schema |    Name    | Type  |  Owner   
+--------+------------+-------+----------
+ public | categories | table | nestuser
+ public | migrations | table | nestuser
+ public | products   | table | nestuser
+(3 rows)
 
 ```
 
-## Логи NestJS (фрагмент)
+### Тест створення категорії
 ```text
-[9:40:09 AM] Starting compilation in watch mode...
-app-1  | 
-app-1  | [9:40:13 AM] Found 0 errors. Watching for file changes.
-app-1  | 
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [NestFactory] Starting Nest application...
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +124ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [InstanceLoader] AppModule dependencies initialized +0ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [InstanceLoader] CacheModule dependencies initialized +42ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +87ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [RoutesResolver] AppController {/}: +15ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [RouterExplorer] Mapped {/, GET} route +7ms
-app-1  | [Nest] 34  - 05/07/2026, 9:40:15 AM     LOG [NestApplication] Nest application successfully started +13ms
+id name        description         createdAt
+-- ----        -----------         ---------
+ 3 Electronics Gadgets and devices 2026-05-10T14:34:03.770Z
+```
+
+### Тест створення продукту
+```text
+id          : 1
+name        : iPhone 15
+description :
+price       : 999,99
+stock       : 50
+isActive    : True
+category    : @{id=5}
+createdAt   : 2026-05-10T14:39:41.653Z
+updatedAt   : 2026-05-10T14:39:41.653Z
+```
+
+### Тест отримання продуктів
+```text
+PS C:\Users\Vadim> Invoke-RestMethod `
+>>   -Method GET `
+>>   -Uri http://localhost:3000/api/products
+
+
+id          : 1
+name        : iPhone 15
+description :
+price       : 999.99
+stock       : 50
+isActive    : True
+category    : @{id=5; name=Electronics; description=Gadgets and devices; createdAt=2026-05-10T14:37:59.951Z}
+createdAt   : 2026-05-10T14:39:41.653Z
+updatedAt   : 2026-05-10T14:39:41.653Z
+
+id          : 2
+name        : USB Cable
+description :
+price       : 9.99
+stock       : 200
+isActive    : True
+category    :
+createdAt   : 2026-05-10T14:40:39.788Z
+updatedAt   : 2026-05-10T14:40:39.788Z
+```
+
+### Тест 404
+```text
+PS C:\Users\Vadim> Invoke-RestMethod `
+>>   -Method GET `
+>>   -Uri http://localhost:3000/api/products/999
+Invoke-RestMethod : {"message":"Product #999 not found","error":"Not Found","statusCode":404}
+At line:1 char:1
++ Invoke-RestMethod `
++ ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebExc
+   eption
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
 ```
